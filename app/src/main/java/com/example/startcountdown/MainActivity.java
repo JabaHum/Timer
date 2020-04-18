@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     TextView timeView;
     private final static String TAG = MainActivity.class.getSimpleName();
     SharedPreferencesManager preferencesManager;
+    CountDownTimer   timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,12 +141,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void timerStart(long timeLengthMilli) {
+        timer = new CountDownTimer(timeLengthMilli, 1000) {
 
+            @Override
+            public void onTick(long milliTillFinish) {
+                getSegundos(milliTillFinish);
 
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        timer.start();
+    }
     @Override
     protected void onResume() {
         super.onResume();
-        getSegundos(preferencesManager.getTimeFinished());
+        timerStart(preferencesManager.getTimeFinished());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
         Log.i(TAG, "registered broacast receiver");
     }
@@ -152,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        timer.cancel();
         unregisterReceiver(br);
         Log.i(TAG, "Unregistered broacast receiver");
     }
@@ -171,5 +188,12 @@ public class MainActivity extends AppCompatActivity {
         stopService(new Intent(this, TimerService.class));
         Log.i(TAG, "Stopped service");
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        timerStart(preferencesManager.getTimeFinished());
+        registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
+        super.onStart();
     }
 }
