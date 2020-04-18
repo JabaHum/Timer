@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
-        timerStart(preferencesManager.getTimeFinished());
+        //timerStart(preferencesManager.getTimeFinished());
         Log.i(TAG, "registered broacast receiver");
     }
 
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         unregisterReceiver(br);
-        timer.cancel();
+        //timer.cancel();
         Log.i(TAG, "Unregistered broacast receiver");
     }
 
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
-        timerStart(preferencesManager.getTimeFinished());
+        //timerStart(preferencesManager.getTimeFinished());
         super.onStart();
     }
 }
