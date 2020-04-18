@@ -24,6 +24,16 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
     SharedPreferencesManager preferencesManager;
     CountDownTimer   timer;
+    long total;
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             startCounterDown(intent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (intent.getExtras() != null) {
+                    long segundos = intent.getLongExtra("countdown", 0);
+                    setTotal(segundos);
+                    //preferencesManager.setTimeFinished(Math.toIntExact(segundos));
+                }
+
+            }
+            context.startService(new Intent(context, TimerService.class));
 
         }
     };
@@ -121,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent notificationIntent  =  new Intent(this,MainActivity.class);
             notificationIntent.setAction(Constants.ACTION.STARTFORGROUND_ACTION);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+           notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             PendingIntent pendingIntent =   PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -152,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-
+                timeView.setText("Done");
             }
         };
         timer.start();
@@ -160,16 +180,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        timerStart(getTotal());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
-        //timerStart(preferencesManager.getTimeFinished());
         Log.i(TAG, "registered broacast receiver");
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        timer.cancel();
         unregisterReceiver(br);
-        //timer.cancel();
         Log.i(TAG, "Unregistered broacast receiver");
     }
 
@@ -192,8 +212,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.i(TAG, "Started service");
+        timerStart(getTotal());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
-        //timerStart(preferencesManager.getTimeFinished());
         super.onStart();
     }
 }

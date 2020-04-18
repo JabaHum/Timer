@@ -8,12 +8,23 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class TimerService extends Service {
     private final static String TAG = TimerService.class.getSimpleName();
 
     public static final String COUNTDOWN_BR = "com.example.startcountdown";
     Intent bi = new Intent(COUNTDOWN_BR);
     CountDownTimer cuentaRegresiva = null;
+
+    public int counter = 0;
+    Context context;
+
+
+    public TimerService(Context context) {
+        this.context = context;
+    }
 
     public TimerService() {
     }
@@ -27,9 +38,6 @@ public class TimerService extends Service {
             public void onTick(long millisUntilFinished) {
                 long segundos = millisUntilFinished / 1000;
                 bi.putExtra("countdown", segundos);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    preferencesManager.setTimeFinished(Math.toIntExact(segundos));
-                }
                 sendBroadcast(bi);
             }
 
@@ -46,6 +54,38 @@ public class TimerService extends Service {
     }
 
 
+
+    private Timer timer;
+    private TimerTask timerTask;
+
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+
+        //initialize the TimerTask's job
+        initializeTimerTask();
+
+        //schedule the timer, to wake up every 1 second
+        timer.schedule(timerTask, 1000, 1000); //
+    }
+
+    public void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                Log.i("in timer", "in timer ++++  " + (counter++));
+            }
+        };
+    }
+
+    public void stoptimertask() {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -55,6 +95,12 @@ public class TimerService extends Service {
     public void onDestroy() {
         cuentaRegresiva.cancel();
         super.onDestroy();
+
+        Log.i("EXIT", "ondestroy!");
+
+        Intent broadcastIntent = new Intent(COUNTDOWN_BR);
+        sendBroadcast(broadcastIntent);
+        stoptimertask();
     }
 
 }
