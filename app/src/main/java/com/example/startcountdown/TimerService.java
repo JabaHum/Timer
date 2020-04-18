@@ -19,7 +19,7 @@ public class TimerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        SharedPreferencesManager preferencesManager = new SharedPreferencesManager();
         cuentaRegresiva = new CountDownTimer(420000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -37,7 +37,7 @@ public class TimerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
 

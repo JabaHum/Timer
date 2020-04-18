@@ -1,5 +1,6 @@
 package com.example.startcountdown;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -28,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
         timeView = findViewById(R.id.timeView);
 
+        SharedPreferencesManager preferencesManager = new SharedPreferencesManager();
+
+
+        isMyServiceRunning(TimerService.class);
+
         timeView.setOnClickListener(view -> {
           Intent i =   new Intent(this, TimerService.class);
           i.setAction(Constants.ACTION.STARTFORGROUND_ACTION);
@@ -35,7 +41,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        assert manager != null;
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
@@ -106,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             notificationIntent.setAction(Constants.ACTION.STARTFORGROUND_ACTION);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            PendingIntent pendingIntent =   PendingIntent.getActivity(this,0,notificationIntent,0);
+            PendingIntent pendingIntent =   PendingIntent.getActivity(this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
             Notification notification = notificationBuilder.setOngoing(true)
@@ -129,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
         Log.i(TAG, "registered broacast receiver");
     }
