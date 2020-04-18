@@ -44,13 +44,13 @@ public class MainActivity extends AppCompatActivity {
         preferencesManager = new SharedPreferencesManager(this);
 
 
-        isMyServiceRunning(TimerService.class);
-
         timeView.setOnClickListener(view -> {
           Intent i =   new Intent(this, TimerService.class);
           i.setAction(Constants.ACTION.STARTFORGROUND_ACTION);
             startService(i);
         });
+
+
 
     }
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -67,36 +67,23 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
             startCounterDown(intent);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                if (intent.getExtras() != null) {
-                    long segundos = intent.getLongExtra("countdown", 0);
-                    setTotal(segundos);
-                    //preferencesManager.setTimeFinished(Math.toIntExact(segundos));
-                }
-
-            }
             context.startService(new Intent(context, TimerService.class));
-
         }
     };
 
     public void startCounterDown(Intent intent) {
         if (intent.getExtras() != null) {
             long segundos  = intent.getLongExtra("countdown", 0);
-            Log.i("segundos",""+segundos);
-            segundos = getSegundos(segundos);
+            setTotal(segundos);
+            getSegundos(segundos);
             startMyOwnForeground();
+            Log.i("segundos",""+getTotal());
 
-            if (segundos == 0){
-                timeView.setText("Done");
-            }
         }
     }
 
-    private long getSegundos(long segundos) {
+    private void getSegundos(long segundos) {
         long minutos;
         if (segundos >= 60) {
             minutos = segundos / 60;
@@ -123,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        return segundos;
     }
 
 
@@ -205,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        stopService(new Intent(this, TimerService.class));
+        startService(new Intent(this, TimerService.class));
         Log.i(TAG, "Stopped service");
         super.onDestroy();
     }
