@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
             Notification notification = notificationBuilder.setOngoing(true)
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentTitle("App is running in background")
+                    .setContentTitle("Wait for 7 mins")
                     .setContentText(timeView.getText())
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationManager.IMPORTANCE_MIN)
