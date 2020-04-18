@@ -160,16 +160,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        timerStart(preferencesManager.getTimeFinished());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
+        timerStart(preferencesManager.getTimeFinished());
         Log.i(TAG, "registered broacast receiver");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        timer.cancel();
         unregisterReceiver(br);
+        timer.cancel();
         Log.i(TAG, "Unregistered broacast receiver");
     }
 
@@ -192,8 +192,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        timerStart(preferencesManager.getTimeFinished());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
+        timerStart(preferencesManager.getTimeFinished());
         super.onStart();
     }
 }
