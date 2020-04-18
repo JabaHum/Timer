@@ -50,7 +50,11 @@ public class MainActivity extends AppCompatActivity {
             startService(i);
         });
 
-
+        /*TimerService mSensorService = new TimerService(getApplicationContext());
+        Intent mServiceIntent = new Intent(getApplicationContext(), mSensorService.getClass());
+        if (!isMyServiceRunning(mSensorService.getClass())) {
+            startService(mServiceIntent);
+        }*/
 
     }
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -194,6 +198,12 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(this, TimerService.class));
         Log.i(TAG, "Stopped service");
         super.onDestroy();
+
+        TimerService mSensorService = new TimerService(getApplicationContext());
+        Intent mServiceIntent = new Intent(getApplicationContext(), mSensorService.getClass());
+        if (!isMyServiceRunning(mSensorService.getClass())) {
+            startService(mServiceIntent);
+        }
     }
 
     @Override
@@ -202,5 +212,6 @@ public class MainActivity extends AppCompatActivity {
         timerStart(getTotal());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
         super.onStart();
+
     }
 }
