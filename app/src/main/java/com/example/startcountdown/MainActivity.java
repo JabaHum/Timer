@@ -75,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
             if (minutos > 9) {
                 if (segundos > 9) {
 
-
-
                     timeView.setText(String.valueOf(minutos) + ":" + String.valueOf(segundos));
                 } else {
                     timeView.setText(String.valueOf(minutos) + ":0" + String.valueOf(segundos));
