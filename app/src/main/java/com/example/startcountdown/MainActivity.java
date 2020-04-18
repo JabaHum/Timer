@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        startService(new Intent(this, TimerService.class));
+        //startService(new Intent(this, TimerService.class));
         Log.i(TAG, "Stopped service");
         super.onDestroy();
 

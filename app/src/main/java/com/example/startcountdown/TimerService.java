@@ -91,11 +91,8 @@ public class TimerService extends Service {
     public void onDestroy() {
         cuentaRegresiva.cancel();
         super.onDestroy();
-
         Log.i("EXIT", "ondestroy!");
-
-        Intent broadcastIntent = new Intent(COUNTDOWN_BR);
-        sendBroadcast(broadcastIntent);
+        sendBroadcast(bi);
         stoptimertask();
     }
 
