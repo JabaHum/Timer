@@ -1,6 +1,5 @@
 package com.example.startcountdown;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,8 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,17 +21,12 @@ public class MainActivity extends AppCompatActivity {
     TextView timeView;
     private final static String TAG = MainActivity.class.getSimpleName();
 
-    String time = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         timeView = findViewById(R.id.timeView);
-
-        //startMyOwnForeground();
 
         timeView.setOnClickListener(view -> {
           Intent i =   new Intent(this, TimerService.class);
@@ -59,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             long segundos  = intent.getLongExtra("countdown", 0);
             Log.i("segundos",""+segundos);
             segundos = getSegundos(segundos);
-            startMyOwnForeground(segundos);
+            startMyOwnForeground();
 
             if (segundos == 0){
                 timeView.setText("Done");
@@ -98,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void startMyOwnForeground(long m) {
+    private void startMyOwnForeground() {
 
         if (Build.VERSION.SDK_INT >= 26) {
             String NOTIFICATION_CHANNEL_ID = "com.example.startcountdown";
