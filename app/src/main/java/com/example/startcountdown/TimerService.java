@@ -61,13 +61,8 @@ public class TimerService extends Service {
     private TimerTask timerTask;
 
     public void startTimer() {
-        //set a new Timer
         timer = new Timer();
-
-        //initialize the TimerTask's job
         initializeTimerTask();
-
-        //schedule the timer, to wake up every 1 second
         timer.schedule(timerTask, 1000, 1000); //
     }
 
@@ -80,7 +75,6 @@ public class TimerService extends Service {
     }
 
     public void stoptimertask() {
-        //stop the timer, if it's not already null
         if (timer != null) {
             timer.cancel();
             timer = null;
