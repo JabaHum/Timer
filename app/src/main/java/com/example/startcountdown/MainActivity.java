@@ -21,7 +21,7 @@ import androidx.core.app.NotificationCompat;
 public class MainActivity extends AppCompatActivity {
     TextView timeView;
     private final static String TAG = MainActivity.class.getSimpleName();
-
+    SharedPreferencesManager preferencesManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         timeView = findViewById(R.id.timeView);
 
-        SharedPreferencesManager preferencesManager = new SharedPreferencesManager();
+        preferencesManager = new SharedPreferencesManager(this);
 
 
         isMyServiceRunning(TimerService.class);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        getSegundos(preferencesManager.getTimeFinished());
         registerReceiver(br, new IntentFilter(TimerService.COUNTDOWN_BR));
         Log.i(TAG, "registered broacast receiver");
     }

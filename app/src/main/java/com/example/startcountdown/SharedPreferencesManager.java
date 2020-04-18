@@ -8,46 +8,28 @@ public class SharedPreferencesManager {
     private static final String APP_SETTINGS = "APP_SETTINGS";
     private  static final  String TIME_FINISHED  ="time_finished";
 
-    // properties
-    private static final String SOME_STRING_VALUE = "SOME_STRING_VALUE";
-    private static final int PRIVATE_MODE = 0;
-    // other properties...
 
-
-    SharedPreferences pref;
+    private SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context _context;
+    int PRIVATE_MODE = 0;
 
-    public SharedPreferencesManager(Context _context) {
-        this._context = _context;
+    public SharedPreferencesManager(Context context) {
+        this._context = context;
         pref = _context.getSharedPreferences(APP_SETTINGS, PRIVATE_MODE);
         editor = pref.edit();
     }
 
-    public SharedPreferencesManager() {}
 
-    private static SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
-    }
-
-    public static String getSomeStringValue(Context context) {
-        return getSharedPreferences(context).getString(SOME_STRING_VALUE , null);
-    }
-
-    public static void setSomeStringValue(Context context, String newValue) {
-        final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(SOME_STRING_VALUE , newValue);
+    public void setTimeFinished(int time) {
+        editor.putInt(TIME_FINISHED, time);
         editor.commit();
     }
 
-    public static String getTimeFinished( Context context) {
-        return getSharedPreferences(context).getString(TIME_FINISHED , null);
-    }
+    public int getTimeFinished() {
 
-    public static void setTimeFinished(Context context, String newValue) {
-        final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
-        editor.putString(TIME_FINISHED , newValue);
-        editor.commit();
+        return pref.getInt(TIME_FINISHED, 0);
+
     }
 
 

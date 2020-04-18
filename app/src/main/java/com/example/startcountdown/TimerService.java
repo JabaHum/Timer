@@ -1,7 +1,9 @@
 package com.example.startcountdown;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
@@ -19,12 +21,15 @@ public class TimerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        SharedPreferencesManager preferencesManager = new SharedPreferencesManager();
+        SharedPreferencesManager preferencesManager = new SharedPreferencesManager(this);
         cuentaRegresiva = new CountDownTimer(420000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long segundos = millisUntilFinished / 1000;
                 bi.putExtra("countdown", segundos);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    preferencesManager.setTimeFinished(Math.toIntExact(segundos));
+                }
                 sendBroadcast(bi);
             }
 
