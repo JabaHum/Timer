@@ -96,4 +96,10 @@ public class TimerService extends Service {
         stoptimertask();
     }
 
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        sendBroadcast(bi);
+    }
 }
